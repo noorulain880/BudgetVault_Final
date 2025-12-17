@@ -1,30 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { getTransactions } from '../api/transactionApi';
+import React, { useState } from 'react';
 import DashboardCard from '../components/DashboardCard';
+import TransactionForm from '../components/TransactionForm';
+import '../styles/main.css';
 
 const Dashboard = () => {
-  const [transactions, setTransactions] = useState([]);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [totalExpense, setTotalExpense] = useState(0);
-
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const res = await getTransactions();
-      setTransactions(res.data);
-      const income = res.data.filter(t => t.type === 'income').reduce((a, b) => a + b.amount, 0);
-      const expense = res.data.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
-      setTotalIncome(income);
-      setTotalExpense(expense);
-    };
-    fetchTransactions();
-  }, []);
+  const [reload, setReload] = useState(false);
 
   return (
-    <div className="dashboard">
-      <h1>Dashboard</h1>
-      <DashboardCard title="Total Income" amount={totalIncome} />
-      <DashboardCard title="Total Expenses" amount={totalExpense} />
-      <DashboardCard title="Balance" amount={totalIncome - totalExpense} />
+    <div className="app-container">
+      <h1 style={{ borderBottom: '2px solid var(--purple-mid)', paddingBottom: '10px' }}>
+        Budget <span style={{ color: 'var(--neon)' }}>Vault</span>
+      </h1>
+      
+      <div className="stats-grid">
+        <DashboardCard title="Total Balance" amount="5,000" />
+        <DashboardCard title="Total Income" amount="8,000" />
+        <DashboardCard title="Total Expense" amount="3,000" />
+      </div>
+
+      <div style={{ background: 'rgba(45,0,77,0.2)', padding: '20px', borderRadius: '15px' }}>
+        <TransactionForm setReload={setReload} reload={reload} />
+      </div>
     </div>
   );
 };
